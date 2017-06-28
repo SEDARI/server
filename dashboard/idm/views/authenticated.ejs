@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>AGILE Client Example</title>
+<link href="/static/css/style.css" rel="stylesheet">
+<script type="text/javascript">
+</script>
+</head>
+<body>
+	<div id="container">
+		<nav>
+			<ul>
+				<li id="navIdmLi"><a id="navIdmA" href="/account"
+					target="content">My information</a>
+					<ul>
+						<li><a href="/account" target="content">Account information</a>
+							<ul>
+								<li><a href="/account" target="content">About me</a></li>
+								<li><a href="/token" target="content">Token</a></li>
+							</ul>
+						<li><a href="/logout">logout</a></li>
+					</ul>
+				</li>
+				<li id="navIdmLi"><a id="navIdmA" href="/list?what=entities"
+					target="content">List</a>
+					<ul>
+						  <li><a href="/list?what=user" target="content">List Users</a>
+							<li><a href="/list?what=sensor" target="content">List Sensors</a>
+							<li><a href="/list?what=client" target="content">List Clients</a>
+							<li><a href="/list?what=groups" target="content">List Groups</a>
+					</ul>
+				</li>
+				<!-- end if info-->
+				<li id="navIdmLi"><a id="navIdmA" href="/read_entity"
+						target="content">Entities</a>
+						<ul>
+							<li><a  href="/read_user"
+									target="content">Users</a>
+								<ul>
+									<li><a href="/read_user" target="content">Read User</a></li>
+									<li><a href="/create_user" target="content">Create User</a></li>
+									<li><a href="/delete_user" target="content">Delete User</a></li>
+								</ul>
+							</li>
+							<li><a  href="/read_entity"
+									target="content">Entities</a>
+								<ul>
+									<li><a href="/read_entity" target="content">Read Entity</a></li>
+							    <li><a href="/create_entity" target="content">Create Entity</a></li>
+									<li><a href="/set_attribute_entity" target="content">Set Attribute for Entity</a></li>
+									<li><a href="/delete_attribute_entity" target="content">Delete Entity's Attribute</a></li>
+									<li><a href="/delete_entity" target="content">Delete Entity</a></li>
+									<li><a href="/search_entity" target="content">Lookup Entity</a></li>
+
+								</ul>
+							</li>
+						</ul>
+				</li>
+				<!-- end of entities-->
+				<li id="navIdmLi"><a id="navIdmA" href="/account"
+					target="content">Groups</a>
+					<ul>
+						<li><a href="/read_group" target="content">Read Group</a></li>
+						<li><a href="/create_group" target="content">Create Group</a></li>
+						<li><a href="/delete_group" target="content">Delete Group</a></li>
+						<li><a href="/add_entity_to_group" target="content">Add Entity to Group</a></li>
+						<li><a href="/remove_entity_from_group" target="content">Delete Entity to Group</a></li>
+					</ul>
+				</li>
+			</ul>
+		</nav>
+
+	</div>
+	<div id="content" align="center">
+		 <iframe name="content"  width="100%"
+                        height="400px" id="iframeContent" marginheight="0" frameborder="0"
+                        scrolling="no"></iframe>
+
+	</div>
+
+</body>
+</html>

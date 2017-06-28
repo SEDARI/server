@@ -1,0 +1,46 @@
+{
+    "name": "sedari",
+    "version": "0.0.1",
+    "description": "SEDARI Server",
+    "main": "server.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node server.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/SEDARI/server.git"
+    },
+    "keywords": [
+        "FORSEC",
+        "SEDARI",
+        "SERIOS"
+    ],
+    "author": "Daniel Schreckling",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/SEDARI/server/issues"
+    },
+    "homepage": "https://github.com/SEDARI/server#readme",
+    "dependencies": {
+        "agile-idm-web-ui": "https://github.com/Agile-IoT/agile-idm-web-ui",
+        "agile-idm-core": "https://github.com/Agile-IoT/agile-idm-core.git",
+        "body-parser": "^1.15.2",
+        "connect-ensure-login": "^0.1.1",
+        "cookie-parser": "^1.4.3",
+        "ejs": "^2.5.3",
+        "express": "^4.14.0",
+        "express-session": "^1.14.2",
+        "http-errors": "^1.5.1",
+        "method-override": "^2.3.7",
+        "morgan": "^1.7.0",
+        "passport": "^0.3.2",
+        "passport-oauth2": "^1.3.0",
+        "querystring": "^0.2.0",
+        "request": "^2.79.0",
+        "serios": "https://github.com/SEDARI/serios.git",
+        "ULocks": "https://github.com/SEDARI/ULocks.git",
+        "UPFROnt": "https://github.com/SEDARI/UPFROnt.git",
+        "winston": "*"
+    }
+}

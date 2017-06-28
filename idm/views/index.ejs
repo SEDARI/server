@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>AGILE-IDM</title>
+<link href="/static/css/style.css" rel="stylesheet">
+<script type="text/javascript">
+  function addListeners(){
+     var combo = document.getElementById("idp");
+		 combo.addEventListener("change", function() {
+						var provider = combo.options[combo.selectedIndex].value;
+						window.location = provider;
+		});
+	}
+</script>
+</head>
+<body onload="addListeners()">
+<div id="content" >
+	<div id="logo">
+  </div>
+	<div id="info">
+		<header><h1>Authenticate User</h1></header>
+
+					Authentication type:
+ 					<select id="idp">
+ 						<option value="">choose one</option>
+ 						<% for(var i=0; i<auth.length; i++) { %>
+ 									  <option value="<%= auth[i].link %>"><%= auth[i].name %></option>
+ 						<% } %>
+ 					</select>
+ 		<div id="resultDivContainer" ></div>
+</div>
+</div>
+
+
+</body>
+</html>
