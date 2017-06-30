@@ -2,7 +2,7 @@ var commandLineArgs = require('command-line-args');
 var getUsage = require('command-line-usage');
 var IdmCore = require('agile-idm-core');
 
-var upfront = require('UPFROnt');
+var upfront = require('../node_modules/agile-idm-web-ui/node_modules/UPFROnt');
 
 /*
 Usage examples:

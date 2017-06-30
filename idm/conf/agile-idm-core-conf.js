@@ -19,8 +19,8 @@ module.exports = {
                     "/var": 6,
                 },
                 //fix this two eventually...
-                locks: "ulocks/Locks",
-                actions: "ulocks/Actions"
+                locks: "./node_modules/agile-idm-core/node_modules/UPFROnt/example/online/Locks/",
+                actions: "./node_modules/agile-idm-core/node_modules/UPFROnt/example/online/Actions"
             }
         },
         pap: {
@@ -75,124 +75,152 @@ module.exports = {
         "create_entity_policy": [
             // actions of an actor are not restricted a priori
             {
-                to: true
+                target: {
+                    type: "/any"
+                }
             }, {
-                to: false
+                source: {
+                    type: "/any"
+                }
             }
         ],
         "top_level_policy": {
             flows: [
                 // all properties can be read by everyone
                 {
-                    to: true
+                    target: {
+                        type: "/any"
+                    }
                 },
                 // all properties can only be changed by the owner of the entity
                 {
-                    to: false,
-                    locks: [
-                        { lock: "isOwner" }
-                    ]
+                    source: {
+                        type: "/user"
+                    },
+                    locks: [{
+                        lock: "isOwner"
+                    }]
                 },
                 {
-                    to: false,
-                    locks: [
-                        { lock: "hasType", args: [ "/user" ] },
-                        { lock: "attrEq", args: ["role", "admin"] }
-                    ]
+                    source: {
+                        type: "/user"
+                    },
+                    locks: [{
+                        lock: "attrEq",
+                        args: ["role", "admin"]
+                    }]
                 }
-            ]
+
+            ],
+            actions: [{
+                name: "delete"
+            }]
         },
         "attribute_level_policies": {
             "user": {
                 "password": [
                     // the property can only be read by the user itself
                     {
-                        to: true,
-                        locks: [
-                            { lock: "hasType", args: [ "/user" ] },
-                            { lock: "isOwner" }
-                        ]
+                        target: {
+                            type: "/user"
+                        },
+                        locks: [{
+                            lock: "isOwner"
+                        }]
                     },
                     // the property can be set by the user itself and
                     {
-                        to: false,
-                        locks: [
-                            { lock: "hasType", args: [ "/user" ] },
-                            { lock: "isOwner" }
-                        ]
+                        source: {
+                            type: "/user"
+                        },
+                        locks: [{
+                            lock: "isOwner"
+                        }]
                     },
                     // by all users with role admin
                     {
-                        to: false,
-                        locks: [
-                            { lock: "hasType", args: [ "/user" ] },
-                            { lock: "attrEq", args: ["role", "admin"] }
-                        ]
+                        source: {
+                            type: "/user"
+                        },
+                        locks: [{
+                            lock: "attrEq",
+                            args: ["role", "admin"]
+                        }]
                     }
                 ],
                 "credentials": [
                     // the property can only be read by the user itself
-                    { to: true,
-                      locks: [
-                          { lock: "hasType", args: [ "/user" ] },
-                          { lock: "isOwner" }
-                      ]
+                    {
+                        target: {
+                            type: "/any"
+                        }
                     },
                     // the property can be set by the user itself and
                     {
-                        to: false,
-                        locks: [
-                            { lock: "hasType", args: [ "/user" ] },
-                            { lock: "isOwner" }
-                        ]
+                        source: {
+                            type: "/user"
+                        },
+                        locks: [{
+                            lock: "isOwner"
+                        }]
                     },
                     // by all users with role admin
                     {
-                        to: false,
-                        locks: [
-                            { lock: "hasType", args: [ "/user" ] },
-                            { lock: "attrEq",  args: ["role", "admin"] }
-                        ]
+                        source: {
+                            type: "/user"
+                        },
+                        locks: [{
+                            lock: "attrEq",
+                            args: ["role", "admin"]
+                        }]
                     }
                 ],
                 "credentials.dropbox": [
                     // the property can only be read by the user itself
                     {
-                        to: true,
-                        locks: [
-                            { lock: "hasType", args: [ "/user" ] },
-                            { lock: "isOwner" }
-                        ]
+                        target: {
+                            type: "/user"
+                        },
+                        locks: [{
+                            lock: "isOwner"
+                        }]
                     },
                     // the property can be set by the user itself and
                     {
-                        to: false,
-                        locks: [
-                            { lock: "hasType", args: [ "/user" ] },
-                            { lock: "isOwner" }
-                        ]
+                        source: {
+                            type: "/user"
+                        },
+                        locks: [{
+                            lock: "isOwner"
+                        }]
                     },
                     // by all users with role admin
                     {
-                        to: false,
-                        locks: [
-                            { lock: "hasType", args: [ "/user" ] },
-                            { lock: "attrEq", args: ["role", "admin"] }
-                        ]
+                        source: {
+                            type: "/user"
+                        },
+                        locks: [{
+                            lock: "attrEq",
+                            args: ["role", "admin"]
+                        }]
                     }
                 ],
                 "role": [
                     // can be read by everyone
                     {
-                        to: true
+                        target: {
+                            type: "/any"
+                        }
                     },
                     // can only be changed by users with role admin
                     {
-                        to: false,
-                        locks: [
-                            { lock: "hasType", args: [ "/user" ] },
-                            { lock: "attrEq", args: ["role", "admin"] }
-                        ]
+                        source: {
+                            type: "/user"
+                        },
+                        locks: [{
+                            lock: "attrEq",
+                            args: ["role", "admin"]
+                        }]
                     }
                 ]
             },
@@ -201,49 +229,49 @@ module.exports = {
                     flows: [
                         // all properties can be read by everyone
                         {
-                            to: true
+                            target: {
+                                type: "/any"
+                            }
                         },
                         // all properties can only be changed by the owner of the entity
                         {
-                            to: false,
-                            locks: [
-                                { lock: "hasType", args: [ "/user" ] },
-                                { lock: "isOwner" }
-                            ]
-                        },
-                        {
-                            to: false,
-                            locks: [
-                                { lock: "hasType", args: [ "/user" ] },
-                                { lock: "attrEq", args: ["role", "admin"] }
-                            ]
+                            source: {
+                                type: "/user"
+                            },
+                            locks: [{
+                                lock: "isOwner"
+                            }]
                         }
                     ]
                 },
                 "credentials.dropbox": [
                     // the property can only be read by the user itself
                     {
-                        to: true,
-                        locks: [
-                            { lock: "hasType", args: [ "/user" ] },
-                            { lock: "isOwner" }
-                        ]
+                        target: {
+                            type: "/user"
+                        },
+                        locks: [{
+                            lock: "isOwner"
+                        }]
                     },
                     // the property can be set by the user itself and
                     {
-                        to: false,
-                        locks: [
-                            { lock: "hasType", args: [ "/user" ] },
-                            { lock: "isOwner" }
-                        ]
+                        source: {
+                            type: "/user"
+                        },
+                        locks: [{
+                            lock: "isOwner"
+                        }]
                     },
                     // by all users with role admin
                     {
-                        to: false,
-                        locks: [
-                            { lock: "hasType", args: [ "/user" ] },
-                            { lock: "attrEq", args: ["role", "admin"] }
-                        ]
+                        source: {
+                            type: "/user"
+                        },
+                        locks: [{
+                            lock: "attrEq",
+                            args: ["role", "admin"]
+                        }]
                     }
                 ]
             }

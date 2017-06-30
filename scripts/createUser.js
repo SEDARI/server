@@ -5,7 +5,7 @@ var IdmCore = require('../node_modules/agile-idm-core');
 var bcrypt = require('bcrypt');
 var saltrounds = 10;
 
-var upfront = require('UPFROnt');
+var upfront = require('../node_modules/agile-idm-web-ui/node_modules/UPFROnt');
 
 /*
 Examples of usage:
