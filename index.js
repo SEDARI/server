@@ -27,6 +27,7 @@ function init(server) {
 
         // TODO: - get Ulocks initialized and running
         //       - check code from Juan whether he tests a successful init of ulocks
+
         upfront.init(upfrontSettings).then(function() {
             idmCore.init().then(function(idmApp) {
                 serios.init(settings.serios, security).then(function(seriosApp) {
