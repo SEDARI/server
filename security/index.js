@@ -5,6 +5,7 @@ w.level = process.env.LOG_LEVEL;
 var upfront = require('UPFROnt');
 var pap = upfront.pap;
 var pdp = upfront.pdp;
+var pep = upfront.pep;
 
 var settings = require('./../upfront/settings.js');
 
@@ -54,6 +55,13 @@ var soDefaultDataPolicy = {
                 { lock: "isOwner" }
             ]
         },
+        {
+            to: true,
+            locks: [
+                { lock: "hasType", args: [ "/user" ] },
+                { lock: "attrEq", args: ["role", "user"] }
+            ]
+        },
         // all properties can only be changed by the owner of the entity or the admin
         {
             to: false,
@@ -70,7 +78,6 @@ var soDefaultDataPolicy = {
         }
     ]
 };
-
 
 function init() {
     return upfront.init(settings);
@@ -185,8 +192,6 @@ var checkRead = function(userInfo, object, type) {
         w.debug("SERIOS.security.checkRead('"+userInfo.id+"', '"+object.id+"')");
         return new Promise(function(resolve, reject) {
             if(valid(object.id) && valid(userInfo.id)) {
-                w.debug("object and user ids are valid");
-                w.debug("Object: ", object);
                 pap.get(object.id, "").then(function(objectPolicy) {
                     w.debug("objectPolicy: ", objectPolicy);
                     object.type = type;
@@ -243,23 +248,28 @@ var checkWrite = function(userInfo, objectID, type) {
 }
 
 var declassify = function(userInfo, object, type) {
-    w.debug("SERIOS.security.declassify('"+userInfo+"', '"+object+"')");
-
     if(type === "/data") {
-        w.debug("SERIOS.security.checkRead('"+userInfo+"', '"+object+"')");
+        w.debug("SERIOS.security.declassify('"+userInfo+"', '"+object+"')");
+        var tmpObject = object;
+        tmpObject.streams = {};
+        tmpObject.streams[object.stream] = { channels: object.channels };
+        delete tmpObject.channels;
+        delete tmpObject.stream;
+
         return new Promise(function(resolve, reject) {
             if(valid(object.soID) && valid(userInfo.id)) {
-                w.debug("object and user ids are valid");
-                pap.get(object.soID+"_data", "").then(function(objectPolicy) {
-                    w.debug("objectPolicy: ", objectPolicy);
-                    object.type = type;
-                    object.id = 1;
-                    var p = pdp.checkRead(userInfo, userDefaultPolicy, object, objectPolicy);
-                    p.then(function(d) {
-                        w.debug("SEDARI.security.checkRead: PDP decision: ", d);
-                        resolve(d);
+                pap.getFullRecord(object.soID+"_data").then(function(objectFullRecord) {
+                    w.debug("objectRecord: " + JSON.stringify(objectFullRecord,null,2));
+                    tmpObject.type = type;
+                    tmpObject.id = 1;
+                    var p = pep.declassify(tmpObject, objectFullRecord, userInfo, userDefaultPolicy);
+                    p.then(function(r) {
+                        w.debug("SEDARI.security.declassify: result: ", r);
+                        r.stream = Object.keys(r.streams)[0];
+                        r.channels = r.streams[r.stream].channels;
+                        resolve(r);
                     }, function(err) {
-                        w.debug("SEDARI.security.checkRead: PDP unable to decide: ", err);
+                        w.debug("SEDARI.security.checkRead: PEP error during declassification: ", err);
                         reject(err);
                     });
                 }, function(err) {
