@@ -10,14 +10,10 @@ function init() {
 }
 
 var checkAuth = function(req, res, next) {
-
-    console.log("req.user: ", req.user);
-    
     // TODO: check whether ensured-login would be a better choice
     if(req.user) {
         next();
     } else {
-        console.log("check bearer");
         passport.authenticate('agile-bearer', {session: false})(req, res, next);
     }
 };

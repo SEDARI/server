@@ -45,7 +45,6 @@ if (useCluster && cluster.isMaster) {
     // ensure connections are closed after request
     // has been served
     app.use(function(req, res, next) {
-        console.log("request ... ");
         res.setHeader('Connection', 'close');
         next();
     });
@@ -57,7 +56,7 @@ if (useCluster && cluster.isMaster) {
                                 w.info('SEDARI Server now running at '+getListenPath());
                             });
 
-    sedari.init().then(function(core) {
+    sedari.init(server).then(function(core) {
         app.use(core);
         w.info("SEDARI core is now running");
     }, function(e) {
