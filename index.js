@@ -2,7 +2,8 @@ var express = require('express');
 var w = require('winston');
 w.level = process.env.LOG_LEVEL;
 
-var ulocks = require('ULocks');
+// var ulocks = require('ULocks');
+var upfront = require('UPFROnt');
 
 var idmCore = require('./idm');
 var dashboard = require('./dashboard');
@@ -13,6 +14,7 @@ var Promise = require('bluebird');
 
 var settings = require('./settings');
 var ulocksSettings = require('./ulocks/settings');
+var upfrontSettings = require('./upfront/settings');
 
 function init() {
     var mainApp = express();
@@ -22,7 +24,9 @@ function init() {
 
         // TODO: - get Ulocks initialized and running
         //       - check code from Juan whether he tests a successful init of ulocks
-        ulocks.init(ulocksSettings).then(function() {
+        
+        // ulocks.init(ulocksSettings).then(function() {
+        upfront.init(upfrontSettings).then(function() {
             idmCore.init().then(function(idmApp) {
                 serios.init(settings.serios, ac).then(function(seriosApp) {
                     var s = settings.serios;
