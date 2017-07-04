@@ -4,20 +4,16 @@ var login = require('connect-ensure-login');
 var w = require('winston');
 w.level = process.env.LOG_LEVEL;
 
-// var ulocks = require('ULocks');
-var upfront = require('UPFROnt');
-
 var idmCore = require('./idm');
 var dashboard = require('./dashboard');
 var security = require('./security');
 var serios = require('./serios');
 var neros = require('./neros');
+var upfront = require('./upfront');
 
 var Promise = require('bluebird');
 
 var settings = require('./settings');
-var ulocksSettings = require('./ulocks/settings');
-var upfrontSettings = require('./upfront/settings');
 
 function init(server) {
     var mainApp = express();
@@ -28,9 +24,9 @@ function init(server) {
         // TODO: - get Ulocks initialized and running
         //       - check code from Juan whether he tests a successful init of ulocks
 
-        upfront.init(upfrontSettings).then(function() {
-            idmCore.init().then(function(idmApp) {
-                serios.init(settings.serios, security).then(function(seriosApp) {
+        idmCore.init().then(function(idmApp) {
+            serios.init(settings.serios, security).then(function(seriosApp) {
+                upfront.init(settings, security).then(function(upfrontApp) {
                     var s = settings.serios;
                     var prefix = (!valid(s) || !valid(s.rest) || !valid(s.rest.prefix)) ? "serios" : s.rest.prefix;
                     if(prefix[0] === '/')
@@ -38,6 +34,8 @@ function init(server) {
                     if(prefix.length === 0)
                         prefix = "serios";
                     mainApp.use("/"+prefix, seriosApp);
+
+                    mainApp.use("/pap", upfrontApp);
 
                     // TODO: UNIFY SETTINGS OF DIFFERENT COMPONENTS
                     // THIS IS CONFUSING!!!

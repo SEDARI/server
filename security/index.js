@@ -7,7 +7,12 @@ var pap = upfront.pap;
 var pdp = upfront.pdp;
 var pep = upfront.pep;
 
-var settings = require('./../upfront/settings.js');
+var IdmCore = require('agile-idm-core');
+
+var settings = require('./../upfront/settings');
+var idmSettings = require('./../idm/conf/agile-idm-core-conf');
+
+var idmCore = null;
 
 var userDefaultPolicy = {
     flows: [
@@ -79,8 +84,16 @@ var soDefaultDataPolicy = {
     ]
 };
 
+var initialized = false;
+
 function init() {
-    return upfront.init(settings);
+    if(!initialized)
+        return upfront.init(settings).then(function() {
+            idmCore = new IdmCore(idmSettings);
+            initialized = true;
+        });
+    else
+        return Promise.resolve();
 }
 
 var checkAuth = function(req, res, next) {
@@ -88,6 +101,7 @@ var checkAuth = function(req, res, next) {
     if(req.user) {
         next();
     } else {
+        console.log("CHECK AUTH");
         passport.authenticate('agile-bearer', {session: false})(req, res, next);
     }
 };
@@ -122,6 +136,8 @@ var checkCreateEntity = function(userInfo, type) {
 var createEntity = function(userInfo, object, type) {
     w.debug("SERIOS.security.createEntity('"+userInfo+"', '"+object+"')");
 
+    // TODO: Use promise chaining 
+    
     return new Promise(function(resolve, reject) {
         if(valid(object.id)) {
             w.debug("object id is valid");
@@ -130,6 +146,20 @@ var createEntity = function(userInfo, object, type) {
                     w.debug("Entity policy set");
                     pap.set(object.id+"_data", soDefaultDataPolicy).then(function() {
                         pap.set(object.id+"_data", "", soDefaultDataPolicy).then(function() {
+                            try {
+                                // TODO: discuss with Juan
+                                var entity = {
+                                    "name": object.name,
+                                    "credentials": { "dropbox": "none"}
+                                }
+                                idmCore.createEntity(userInfo, object.id, type, entity).then(function() {
+                                    w.debug("Success creating entity in IDMx");
+                                }, function(e) {
+                                    w.error("Entity in IDM not created: "+e);
+                                });
+                            } catch(e) {
+                                console.log("ERROR: ", e);
+                            }
                             w.debug("Policy for generated data set");
                             resolve();
                         }, function(err) {
@@ -289,9 +319,9 @@ var declassify = function(userInfo, object, type) {
     return Promise.resolve(object);
 }
 
-    var valid = function(o) {
-        return (o !== undefined) && (o !== null);
-    }
+var valid = function(o) {
+    return (o !== undefined) && (o !== null);
+}
 
 module.exports = {
     init: init,
@@ -305,6 +335,6 @@ module.exports = {
     checkWrite: checkWrite,
     declassify: declassify,
     checkAuth: checkAuth,
-    checkAuthOrToken: checkAuth,
+    checkAuthOrToken: checkAuthOrToken,
     checkPermission: checkPermission
 }
