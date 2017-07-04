@@ -2,35 +2,46 @@ var http = require('http');
 var express = require("express");
 var RED = require("node-red");
 
-function init(server) {
+var clientCredentials = null;
+
+function init(server, ccs) {
     // Create an Express app
     var app = express();
 
+    clientCredentials = ccs;
+
     // Add a simple route for static content served from 'public'
-    console.log("-0-");
     app.use("/",express.static("public"));
-    console.log("-1-");
 
     // Create the settings object - see default settings.js file for other options
     var settings = {
         httpAdminRoot:"/neros",
         httpNodeRoot: "/neros",
         ui: {
-            path: "/neros/ui"
+            path: "/ui"
         },
+        nodesDir: __dirname + "/neros/nodes",
         logging: {
             console: {
-                level: "debug"
+                level: "info"
             }
         },
         // userDir:"/home/nol/.nodered/",
-        functionGlobalContext: { }    // enables global context
+        functionGlobalContext: { // make client credentials available globally
+            clientCredentials: clientCredentials
+        },
+
+        /* httpNodeMiddleware: function(req,res,next) {
+        // Handle/reject the request, or pass it on to the http in node by calling next();
+        // Optionally skip our rawBodyParser by setting this to true;
+        //req.skipRawBodyParser = true;
+        console.log("node middleware processed");
+        next();
+        }  */
     };
 
     // Initialise the runtime with a server and settings
     RED.init(server,settings);
-
-    console.log("-2-");
 
     // Serve the editor UI from /red
     app.use(settings.httpAdminRoot,RED.httpAdmin);
@@ -38,11 +49,7 @@ function init(server) {
     // Serve the http nodes UI from /api
     app.use(settings.httpNodeRoot,RED.httpNode);
 
-    console.log("-3-");
-    
     RED.start();
-
-    console.log("-4-");
 
     return app;
 }
